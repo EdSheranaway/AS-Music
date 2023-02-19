@@ -1,4 +1,5 @@
 import { IAuthController } from '../serverTypes';
+import { stringify } from 'querystring';
 
 const authController: IAuthController = {
   signup: (req, res, next) => {},

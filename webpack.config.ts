@@ -1,5 +1,6 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import Dotenv from 'dotenv-webpack';
 module.exports = {
   entry: './src/client/index.tsx',
   output: {
@@ -33,7 +34,7 @@ module.exports = {
       },
       {
         test: /\.(jpg|jpeg|png|ttf|svg|gif)$/,
-        type: 'asset/resource',
+        type: 'assets',
         exclude: /node_modules/,
       },
     ],
@@ -51,6 +52,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/client/index.html',
     }),
+    new Dotenv(),
   ],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.gif', '.png', '.svg'],
