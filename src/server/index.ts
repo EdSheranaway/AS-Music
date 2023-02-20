@@ -5,6 +5,7 @@ import { IMiddleware } from './serverTypes';
 import authRouter from './routes/auth';
 import { connect, ConnectOptions, set } from 'mongoose';
 import * as dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 const { DB_URI } = process.env;
@@ -30,6 +31,7 @@ const connectToDb = () => {
 connectToDb();
 
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../client/dist/assets')));

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { IAuthController } from '../serverTypes';
 import { stringify } from 'querystring';
@@ -36,33 +38,45 @@ const authController: IAuthController = {
       });
     }
   },
-  spotifyAuthCallback: async (req, res, next) => {
+  spotifyAuthCallback: (req, res, next) => {
     const code = (req.query.code as string) || null;
-    try {
-      const response = await axios({
-        method: 'post',
-        url: 'https://accounts.spotify.com/api/token',
-        data: stringify({
-          grant_type: 'authorization_code',
-          code,
-          redirect_uri: REDIRECT_URI,
-        }),
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${Buffer.from(
-            `${SPOTIFY_CID as string}:${SPOTIFY_CS as string}`
-          ).toString('base64')}`,
-        },
-      });
-      res.locals.data = `<pre>${JSON.stringify(response.data, null, 2)}</pre>`;
-      return next();
-    } catch (error) {
-      return next({
-        log: `Error caught in authController.spotifyAuth ${error}`,
-        status: 401,
-        message: 'Authentication failed',
-      });
-    }
+    axios({
+      method: 'post',
+      url: 'https://accounts.spotify.com/api/token',
+      data: stringify({
+        grant_type: 'authorization_code',
+        code,
+        redirect_uri: REDIRECT_URI,
+      }),
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded',
+        Authorization: `Basic ${Buffer.from(
+          `${SPOTIFY_CID as string}:${SPOTIFY_CS as string}`
+        ).toString('base64')}`,
+      },
+    })
+      .then((resp) => {
+        if (resp.status === 200) {
+          console.log('hi there');
+          const access_token = resp.data.access_token as string;
+          const refresh_token = resp.data.refresh_token as string;
+          const queryParams = stringify({ access_token, refresh_token });
+          res.locals.redirect = `http://localhost:8080/?${queryParams}`;
+          return next();
+        } else {
+          res.locals.redirect = `/?${stringify({
+            error: 'invalid_token',
+          })}`;
+          return next();
+        }
+      })
+      .catch((e) =>
+        next({
+          log: `Error caught in authController.spotifyAuth ${e}`,
+          status: 401,
+          message: 'Authentication failed',
+        })
+      );
   },
   refreshToken: async (req, res, next) => {
     const refresh_token = req.query.refresh_token as string;
