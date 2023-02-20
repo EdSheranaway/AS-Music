@@ -37,13 +37,13 @@ app.use(express.static(path.join(__dirname, '../client/dist/assets')));
 // routers
 app.use('/auth', authRouter);
 
-app.get<IMiddleware>('*', (_req, res) => {
+app.get<IMiddleware>('/', (_req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 
-// app.use<IMiddleware>('*', (_req, res) => {
-//   res.status(404).send("the page you're looking for doesn't exist");
-// });
+app.use<IMiddleware>('*', (_req, res) => {
+  res.status(404).send("the page you're looking for doesn't exist");
+});
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   const defaultErr = {

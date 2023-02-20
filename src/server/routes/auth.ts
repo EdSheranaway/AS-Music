@@ -1,11 +1,23 @@
 import { Router } from 'express';
 import authController from '../controllers/authController';
-
+import { stringify } from 'querystring';
+import axios from 'axios';
+import { config } from 'dotenv';
+config();
+const { SPOTIFY_CID, SPOTIFY_CS, REDIRECT_URI } = process.env;
 const router = Router();
 
 // oAuth to spotify and apple
-router.get('/spotify', authController.spotifyAuth, (req, res) => {
-  res.status(200).json(res.locals.userSpotify);
+router.get('/spotify', authController.spotifyAuthInit, (req, res) => {
+  res.redirect(res.locals.redirect as string);
+});
+
+router.get('/callback', authController.spotifyAuthCallback, (req, res) => {
+  res.send(200).json(res.locals.data);
+});
+
+router.get('/refresh', authController.refreshToken, (req, res) => {
+  res.send(200).json(res.locals.refresh);
 });
 
 router.post('/apple', (req, res) => {

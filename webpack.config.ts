@@ -1,60 +1,68 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import Dotenv from 'dotenv-webpack';
+
 module.exports = {
   entry: './src/client/index.tsx',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, '/dist'),
     filename: 'bundle.js',
-  },
-  devtool: 'eval-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.(ts|tsx)$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.js$|jsx/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
-          },
-        ],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(jpg|jpeg|png|ttf|svg|gif)$/,
-        type: 'assets',
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  mode: 'development',
-  devServer: {
-    port: 8080,
-    hot: true,
-    historyApiFallback: true,
-    proxy: {
-      '/': 'http://localhost:3000',
-    },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/client/index.html',
+      template: './src/client/index.html',
     }),
-    new Dotenv(),
   ],
+  devServer: {
+    host: 'localhost',
+    //frontend
+    port: 8080,
+    historyApiFallback: true,
+    //backend
+    proxy: {
+      '/': 'http://localhost:3000/',
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        // loader: 'file-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
+        },
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
+      },
+
+      {
+        test: /\.css$/i,
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        exclude: /node_modules/,
+
+        use: ['url-loader', 'file-loader'],
+      },
+      {
+        test: /\.svg$/,
+        loader: 'url-loader',
+      },
+    ],
+  },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.gif', '.png', '.svg'],
+    // Enable importing JS / TSX files without specifying their extension
+    extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      fs: false,
+    },
   },
 };
