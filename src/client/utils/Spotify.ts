@@ -123,11 +123,5 @@ const getAccessToken = () => {
  * https://github.com/axios/axios#global-axios-defaults
  */
 axios.defaults.baseURL = 'https://api.spotify.com/v1';
-axios.defaults.headers['Authorization'] = `Bearer ${
-  LOCALSTORAGE_VALUES.accessToken as string
-}`;
-axios.defaults.headers['Content-Type'] = 'application/json';
-
-export const getCurrentUserProfile = () => axios.get('/me');
 
 export const accessToken = getAccessToken();

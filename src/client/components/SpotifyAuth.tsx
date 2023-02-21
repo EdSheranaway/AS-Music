@@ -1,18 +1,28 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import logo from '../assets/SLogo.svg';
 import { useEffect, useState } from 'react';
-import { accessToken, logout, getCurrentUserProfile } from '../utils/Spotify';
+import { accessToken, logout } from '../utils/Spotify';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 function SpotifyAuth(): JSX.Element {
   const [token, setToken] = useState<string | null | undefined>(null);
   const [profile, setProfile] = useState<object | null>(null);
   useEffect(() => {
     setToken(accessToken);
-    getCurrentUserProfile()
-      .then((data) => setProfile(data))
+    axios
+      .get('/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken as string}`,
+          'Content-Type': 'application/json',
+        },
+      })
+      .then((data) => {
+        setProfile(data.data);
+      })
       .catch((e) => console.error(e));
   }, []);
-  if (profile) console.log(profile);
+  if (profile) console.log('me:', profile);
   return (
     <div
       className="app"
