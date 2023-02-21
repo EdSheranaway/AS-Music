@@ -10,11 +10,10 @@ router.get('/spotify', authController.spotifyAuthInit, (req, res) => {
 });
 
 router.get('/callback', authController.spotifyAuthCallback, (req, res) => {
-  console.log('res.locals', res.locals.redirect);
   res.redirect(res.locals.redirect as string);
 });
 
-router.get('/refresh', authController.refreshToken, (req, res) => {
+router.get('/refresh_token', authController.refreshToken, (req, res) => {
   res.status(200).json(res.locals.refresh);
 });
 

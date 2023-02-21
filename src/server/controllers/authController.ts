@@ -57,10 +57,14 @@ const authController: IAuthController = {
     })
       .then((resp) => {
         if (resp.status === 200) {
-          console.log('hi there');
           const access_token = resp.data.access_token as string;
+          const expires_in = resp.data.expires_in as string;
           const refresh_token = resp.data.refresh_token as string;
-          const queryParams = stringify({ access_token, refresh_token });
+          const queryParams = stringify({
+            access_token,
+            refresh_token,
+            expires_in,
+          });
           res.locals.redirect = `http://localhost:8080/?${queryParams}`;
           return next();
         } else {
@@ -79,6 +83,7 @@ const authController: IAuthController = {
       );
   },
   refreshToken: async (req, res, next) => {
+    console.log('this running?');
     const refresh_token = req.query.refresh_token as string;
     try {
       const response = await axios({

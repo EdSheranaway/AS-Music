@@ -1,22 +1,18 @@
 import logo from '../assets/SLogo.svg';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { accessToken, logout, getCurrentUserProfile } from '../utils/Spotify';
+import { Link } from 'react-router-dom';
 
 function SpotifyAuth(): JSX.Element {
+  const [token, setToken] = useState<string | null | undefined>(null);
+  const [profile, setProfile] = useState<object | null>(null);
   useEffect(() => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-    const accessToken = urlParams.get('access_token');
-    const refreshToken = urlParams.get('refresh_token');
-
-    console.log(accessToken);
-    console.log(refreshToken);
-    if (refreshToken) {
-      fetch(`/refresh_token?refresh_token=${refreshToken}`)
-        .then((res) => res.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
-    }
+    setToken(accessToken);
+    getCurrentUserProfile()
+      .then((data) => setProfile(data))
+      .catch((e) => console.error(e));
   }, []);
+  if (profile) console.log(profile);
   return (
     <div
       className="app"
@@ -28,8 +24,19 @@ function SpotifyAuth(): JSX.Element {
       }}
     >
       <img src={logo.toString()} alt="Spotify Logo" />
-      {/* <button onClick={() => login()}>Log in to Spotify</button> */}
-      <a href="http://localhost:3000/auth/spotify">click me</a>
+      {!token ? (
+        <a className="App-link" href="http://localhost:3000/auth/spotify">
+          Log in to Spotify
+        </a>
+      ) : (
+        <>
+          <h1>Logged in!</h1>
+          <Link to={'/dashboard'} state={{ token }}>
+            Go to Dashboard
+          </Link>
+          <button onClick={logout}>Log Out</button>
+        </>
+      )}
     </div>
   );
 }
