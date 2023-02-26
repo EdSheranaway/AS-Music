@@ -1,10 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Router, Request, Response } from 'express';
-import sessionController from '../controllers/session.controller';
-import userController from '../controllers/user.controller';
-import requireUser from '../middleware/requireUser';
-import validateRe from '../middleware/validateResource';
-import { createSessionSchema } from '../schema/session.schema';
-import { createUserSchema } from '../schema/user.schema';
+import { userController, sessionController } from '@controllers';
+import { requireUser, validateRe } from '@middleware';
+import { createSessionSchema, createUserSchema } from '@schemas';
 
 const userRouter = Router();
 

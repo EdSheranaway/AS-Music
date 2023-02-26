@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import config from 'config';
-import { UserDocument } from '../serverTypes';
+import { UserDocument } from '@serverTypes';
 
 const userSchema = new mongoose.Schema(
   {

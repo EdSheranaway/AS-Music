@@ -27,6 +27,16 @@
       "\\.(jpg|jpeg|png|gif)$": "<rootDir>/__mocks__/fileMock.js"
     }
   },
+  "_moduleAliases": {
+    "@utils": "src/server/utils/index.ts",
+    "@routes": "src/server/routes/index",
+    "@middleware": "src/server/middleware/index",
+    "@controllers": "src/server/controllers/index",
+    "@schemas": "src/server/schema/index",
+    "@models": "src/server/models/index",
+    "@services": "src/server/service/session.service",
+    "@serverTypes": "src/server/serverTypes"
+  },
   "keywords": [],
   "author": "EdSheranaway",
   "license": "ISC",
@@ -39,7 +49,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
-    "@types/bcrypt": "^5.0.0",
+    "@types/bcryptjs": "^2.4.2",
     "@types/config": "^3.3.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
@@ -75,6 +85,7 @@
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^3.14.2",
     "typescript": "^4.9.5",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1",
@@ -83,7 +94,7 @@
   },
   "dependencies": {
     "axios": "^1.3.3",
-    "bcrypt": "^5.1.0",
+    "bcryptjs": "^2.4.3",
     "config": "^3.3.9",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -94,15 +105,16 @@
     "file-loader": "^6.2.0",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
+    "module-alias": "^2.2.2",
     "mongoose": "^6.9.2",
     "pino": "^8.11.0",
     "pino-pretty": "^9.4.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^3.1.4",
+    "react-hook-form": "^7.43.2",
     "react-router-dom": "^6.8.1",
     "sass": "^1.58.2",
-    "tsimportlib": "^0.0.3",
     "url-loader": "^4.1.1",
     "zod": "^3.20.6"
   }

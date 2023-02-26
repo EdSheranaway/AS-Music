@@ -59,9 +59,34 @@ module.exports = {
     ],
   },
   resolve: {
-    // alias: {
-    //   '@': path.resolve(__dirname, 'src/'),
-    // },
+    alias: {
+      '@utils': path.resolve(__dirname, 'src', 'server', 'utils', 'index.ts'),
+      '@routes': path.resolve(__dirname, 'src', 'server', 'routes', 'index'),
+      '@middleware': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'middleware',
+        'index'
+      ),
+      '@controllers': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'controllers',
+        'index'
+      ),
+      '@schemas': path.resolve(__dirname, 'src', 'server', 'schema', 'index'),
+      '@models': path.resolve(__dirname, 'src', 'server', 'models', 'index'),
+      '@services': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'service',
+        'session.service'
+      ),
+      '@serverTypes': path.resolve(__dirname, 'src', 'server', 'serverTypes'),
+    },
     // Enable importing JS / TSX files without specifying their extension
     extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
     fallback: {

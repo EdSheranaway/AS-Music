@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from 'axios';
 import config from 'config';
 import { stringify } from 'querystring';
 
-const REDIRECT_URI = config.get<string>('redirect_uri');
+const REDIRECT_URI = config.get<string>('redirectUri');
 const SPOTIFY_CID = config.get<string>('spotifyCID');
 const SPOTIFY_CS = config.get<string>('spotifyCS');
 

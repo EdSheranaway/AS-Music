@@ -1,7 +1,5 @@
 import { Router } from 'express';
-import authController from '../controllers/authController';
-import { config } from 'dotenv';
-config();
+import { authController } from '@controllers';
 const router = Router();
 
 // oAuth to spotify and apple
