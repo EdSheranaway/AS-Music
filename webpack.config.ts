@@ -59,6 +59,9 @@ module.exports = {
     ],
   },
   resolve: {
+    // alias: {
+    //   '@': path.resolve(__dirname, 'src/'),
+    // },
     // Enable importing JS / TSX files without specifying their extension
     extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
     fallback: {

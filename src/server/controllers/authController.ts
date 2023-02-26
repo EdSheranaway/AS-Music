@@ -1,13 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IAuthController } from '../serverTypes';
-import { stringify } from 'querystring';
-import { generateRandomString } from '../utils/serverUtils';
+import { generateRandomString } from '@utils';
 import axios, { AxiosResponse } from 'axios';
-import { config } from 'dotenv';
-config();
-const { SPOTIFY_CID, SPOTIFY_CS, REDIRECT_URI } = process.env;
+import config from 'config';
+import { stringify } from 'querystring';
+
+const REDIRECT_URI = config.get<string>('redirect_uri');
+const SPOTIFY_CID = config.get<string>('spotifyCID');
+const SPOTIFY_CS = config.get<string>('spotifyCS');
 
 const authController: IAuthController = {
   signup: (req, res, next) => {},
@@ -51,7 +52,7 @@ const authController: IAuthController = {
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
         Authorization: `Basic ${Buffer.from(
-          `${SPOTIFY_CID as string}:${SPOTIFY_CS as string}`
+          `${SPOTIFY_CID}:${SPOTIFY_CS}`
         ).toString('base64')}`,
       },
     })
@@ -83,7 +84,6 @@ const authController: IAuthController = {
       );
   },
   refreshToken: async (req, res, next) => {
-    console.log('this running?');
     const refresh_token = req.query.refresh_token as string;
     try {
       const response = await axios({
@@ -96,7 +96,7 @@ const authController: IAuthController = {
         headers: {
           'content-type': 'application/x-www-form-urlencoded',
           Authorization: `Basic ${Buffer.from(
-            `${SPOTIFY_CID as string}:${SPOTIFY_CS as string}`
+            `${SPOTIFY_CID}:${SPOTIFY_CS}`
           ).toString('base64')}`,
         },
       });
