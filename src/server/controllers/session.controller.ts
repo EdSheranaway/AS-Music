@@ -15,7 +15,6 @@ const sessionController: ISessionController = {
         user.userId,
         req.get('user-agent') || ''
       );
-
       const accessToken = signJwt(
         { ...user, session: session._id as string },
         'accessTokenPrivateKey',
@@ -27,6 +26,24 @@ const sessionController: ISessionController = {
         'refreshTokenPrivateKey',
         { expiresIn: config.get('refreshTokenTtl') }
       );
+
+      res.cookie('accessToken', accessToken, {
+        maxAge: 900000, //15 mins,
+        httpOnly: true,
+        domain: config.get<string>('domain'),
+        path: '/',
+        sameSite: 'strict',
+        secure: false, // in production put true because https
+      });
+
+      res.cookie('refreshToken', refreshToken, {
+        maxAge: 2.592e9, // 30 days,
+        httpOnly: true,
+        domain: config.get<string>('domain'),
+        path: '/',
+        sameSite: 'strict',
+        secure: false, // in production put true because https
+      });
 
       res.locals.user = { ...user, accessToken, refreshToken };
 
@@ -44,7 +61,6 @@ const sessionController: ISessionController = {
     } else {
       user = res.locals.user.userId;
     }
-    console.log('user', res.locals);
     try {
       const sessions = await SessionModel.find({ user, valid: true });
 

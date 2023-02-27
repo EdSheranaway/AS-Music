@@ -1,15 +1,18 @@
-import { useLocation } from 'react-router-dom';
-type LocationState = {
-  state: {
-    token: string;
-  };
-};
-function Dashboard() {
-  const location: LocationState = useLocation();
-  const { token } = location.state;
-  if (token) console.log('token', token);
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
-  return <div>Dashboard</div>;
+interface IDashBoardProps {
+  user: string | undefined;
+}
+
+function Dashboard({ user }: IDashBoardProps) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!user) navigate('/login');
+  }, [user, navigate]);
+
+  return <div>hi there {user}</div>;
 }
 
 export default Dashboard;

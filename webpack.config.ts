@@ -1,5 +1,10 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { EnvironmentPlugin } from 'webpack';
+import { config } from 'dotenv';
+config();
+
+const environmentVariables = ['API_BASE_URL', 'SPOTIFY_BASE_URL'];
 
 module.exports = {
   entry: './src/client/index.tsx',
@@ -11,6 +16,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
     }),
+    new EnvironmentPlugin(environmentVariables),
   ],
   devServer: {
     host: 'localhost',
@@ -19,7 +25,7 @@ module.exports = {
     historyApiFallback: true,
     //backend
     proxy: {
-      '/': 'http://localhost:3000/',
+      '/api/**': 'http://localhost:3000/',
     },
   },
   module: {
@@ -40,11 +46,20 @@ module.exports = {
         exclude: /node_modules/,
         use: ['ts-loader'],
       },
-
       {
-        test: /\.css$/i,
-        exclude: /node_modules/,
-        use: ['style-loader', 'css-loader'],
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
+            },
+          },
+          'sass-loader',
+        ],
       },
       {
         test: /\.(png|jpg|gif)$/i,

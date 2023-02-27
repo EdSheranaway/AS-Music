@@ -27,6 +27,7 @@ const userController: IUserController = {
     const { email, password } = req.body;
     try {
       const user = await UserModel.findOne({ email });
+
       if (!user) {
         return next({
           status: 401,

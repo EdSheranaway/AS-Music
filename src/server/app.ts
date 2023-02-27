@@ -2,24 +2,32 @@ import 'module-alias/register';
 import express from 'express';
 import path from 'path';
 import config from 'config';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { connect, logger } from '@utils';
 import deserializeUser from './middleware/deserializeUser';
 import { ErrorHandler, IMiddleware } from '@serverTypes';
 import authRouter from './routes/oAuth';
+import userRouter from './routes/routes';
 const app = express();
 const port = config.get<number>('port');
 
+app.use(
+  cors({
+    origin: config.get('origin'),
+    credentials: true,
+  })
+);
 app.use(express.json());
+app.use(cookieParser());
 app.use(deserializeUser);
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, '../client/dist/assets')));
+app.use(express.static(path.join(__dirname, '../dist/client')));
 // routers
-app.use('/oAuth', authRouter);
-// app.use('/user', userRouter);
+app.use('/api/oAuth', authRouter);
+app.use('/api/user', userRouter);
 
-app.get<IMiddleware>('/', (_req, res) => {
+app.get<IMiddleware>('*', (_req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
 });
 

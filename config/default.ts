@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 export default {
-  port: 3000,
+  port: process.env.PORT,
+  domain: process.env.DOMAIN,
+  origin: 'http://localhost:8080',
   dbUri: process.env.DB_URI,
   saltWorkFactor: 10,
   accessTokenTtl: '15m',

@@ -1,10 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Router, Request, Response } from 'express';
 import { userController, sessionController } from '@controllers';
+import { CreateUserInput } from '@schemas';
 import { requireUser, validateRe } from '@middleware';
 import { createSessionSchema, createUserSchema } from '@schemas';
 
 const userRouter = Router();
+
+userRouter.get(
+  '/me',
+  requireUser,
+  (
+    _req: Request<
+      Record<string, never>,
+      Record<string, never>,
+      CreateUserInput['body']
+    >,
+    res: Response
+  ) => {
+    return res.send(res.locals.user);
+  }
+);
 
 userRouter.post(
   '/signup',

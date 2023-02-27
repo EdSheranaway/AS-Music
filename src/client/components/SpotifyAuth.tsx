@@ -22,7 +22,7 @@ function SpotifyAuth(): JSX.Element {
       })
       .catch((e) => console.error(e));
   }, []);
-  if (profile) console.log('me:', profile);
+  // if (profile) console.log('me:', profile);
   return (
     <div
       className="app"
