@@ -5,6 +5,7 @@ export default {
   domain: process.env.DOMAIN,
   origin: 'http://localhost:8080',
   dbUri: process.env.DB_URI,
+  spotifyBaseUrl: process.env.SPOTIFY_BASE_URL,
   saltWorkFactor: 10,
   accessTokenTtl: '15m',
   refreshTokenTtl: '30d',

@@ -1,27 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 import logo from '../assets/SLogo.svg';
-import { useEffect, useState } from 'react';
-import { accessToken, logout } from '../utils/Spotify';
+// import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios';
 
 function SpotifyAuth(): JSX.Element {
-  const [token, setToken] = useState<string | null | undefined>(null);
-  const [profile, setProfile] = useState<object | null>(null);
-  useEffect(() => {
-    setToken(accessToken);
-    axios
-      .get('/me', {
-        headers: {
-          Authorization: `Bearer ${accessToken as string}`,
-          'Content-Type': 'application/json',
-        },
-      })
-      .then((data) => {
-        setProfile(data.data);
-      })
-      .catch((e) => console.error(e));
-  }, []);
+  const token = false;
+  // const [token, setToken] = useState<string | null | undefined>(null);
+  // const [profile, setProfile] = useState<object | null>(null);
+  // useEffect(() => {
+  //   setToken(accessToken);
+  //   axios
+  //     .get('/me', {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken as string}`,
+  //         'Content-Type': 'application/json',
+  //       },
+  //     })
+  //     .then((data) => {
+  //       setProfile(data.data);
+  //     })
+  //     .catch((e) => console.error(e));
+  // }, []);
   // if (profile) console.log('me:', profile);
   return (
     <div
@@ -35,7 +35,7 @@ function SpotifyAuth(): JSX.Element {
     >
       <img src={logo.toString()} alt="Spotify Logo" />
       {!token ? (
-        <a className="App-link" href="http://localhost:3000/auth/spotify">
+        <a className="App-link" href="http://localhost:3000/api/oAuth/spotify">
           Log in to Spotify
         </a>
       ) : (
@@ -44,7 +44,6 @@ function SpotifyAuth(): JSX.Element {
           <Link to={'/dashboard'} state={{ token }}>
             Go to Dashboard
           </Link>
-          <button onClick={logout}>Log Out</button>
         </>
       )}
     </div>

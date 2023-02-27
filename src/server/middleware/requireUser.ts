@@ -7,7 +7,7 @@ const requireUser: IMiddleware = (_req, res, next) => {
     return next({
       log: 'Error occured in requireUser middleware, user is not logged in',
       status: 403,
-      message: 'User not logged in',
+      message: { err: 'User not logged in' },
     });
   }
 

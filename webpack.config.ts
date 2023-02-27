@@ -4,7 +4,7 @@ import { EnvironmentPlugin } from 'webpack';
 import { config } from 'dotenv';
 config();
 
-const environmentVariables = ['API_BASE_URL', 'SPOTIFY_BASE_URL'];
+const environmentVariables = ['API_BASE_URL'];
 
 module.exports = {
   entry: './src/client/index.tsx',

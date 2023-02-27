@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -32,11 +32,9 @@ function Login() {
 
   async function onSubmit(values: CreateSessionInput) {
     try {
-      const newUser = await axios.post(
-        `${process.env.API_BASE_URL}/user/login`,
-        values,
-        { withCredentials: true }
-      );
+      await axios.post(`${process.env.API_BASE_URL}/user/login`, values, {
+        withCredentials: true,
+      });
       nav('/');
     } catch (error) {
       if (error instanceof Error) {
@@ -46,6 +44,10 @@ function Login() {
   }
   return (
     <>
+      <h1>Login Form</h1>
+      <h2>
+        No account? <Link to="/register">Register</Link>
+      </h2>
       {regisetError && <p>{regisetError}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-element">

@@ -26,8 +26,9 @@ userRouter.post(
   '/signup',
   validateRe(createUserSchema),
   userController.signup,
+  sessionController.createSession,
   (_req: Request, res: Response) => {
-    return res.status(200).json(res.locals.newUser);
+    return res.status(200).json(res.locals.user);
   }
 );
 

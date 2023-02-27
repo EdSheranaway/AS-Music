@@ -1,5 +1,6 @@
 import userController from './user.controller';
 import sessionController from './session.controller';
-import authController from './authController';
+import authController from './auth.controller';
+import SpotifyController from './spotify.controller';
 
-export { userController, sessionController, authController };
+export { userController, sessionController, authController, SpotifyController };
