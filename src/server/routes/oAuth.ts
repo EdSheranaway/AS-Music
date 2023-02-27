@@ -1,10 +1,18 @@
 import { Router } from 'express';
-
+import { authController } from '@controllers';
 const router = Router();
 
 // oAuth to spotify and apple
-router.post('/spotify', (req, res) => {
-  res.status(200).json(res.locals.userSpotify);
+router.get('/spotify', authController.spotifyAuthInit, (req, res) => {
+  res.redirect(res.locals.redirect as string);
+});
+
+router.get('/callback', authController.spotifyAuthCallback, (req, res) => {
+  res.redirect(res.locals.redirect as string);
+});
+
+router.get('/refresh_token', authController.refreshToken, (req, res) => {
+  res.status(200).json(res.locals.refresh);
 });
 
 router.post('/apple', (req, res) => {
