@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 import { useEffect } from 'react';
 
 interface IDashBoardProps {
@@ -6,11 +6,9 @@ interface IDashBoardProps {
 }
 
 function Dashboard({ user }: IDashBoardProps) {
-  const navigate = useNavigate();
-
   useEffect(() => {
-    if (!user) navigate('/login');
-  }, [user, navigate]);
+    if (!user) redirect('/login');
+  }, [user]);
 
   return <div>hi there {user}</div>;
 }

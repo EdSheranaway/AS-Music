@@ -34,8 +34,7 @@ function App() {
       <BrowserRouter>
         <NavBar user={data?.name} />
         <Routes>
-          {user && <Route path="/" element={<Dashboard user={data?.name} />} />}
-          {!user && <Route path="/" element={<Login />} />}
+          <Route path="/" element={<Dashboard user={data?.name} />} />
           <Route path="/auth/spotify" element={<SpotifyAuth />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />

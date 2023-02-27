@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
@@ -32,7 +32,7 @@ const createUserSchema = object({
 type CreateUserInput = TypeOf<typeof createUserSchema>;
 
 function Register() {
-  const [regisetError, setRegisterError] = useState<string | null>(null);
+  const [registerError, setRegisterError] = useState<string | null>(null);
   const nav = useNavigate();
 
   const {
@@ -45,10 +45,9 @@ function Register() {
 
   async function onSubmit(values: CreateUserInput) {
     try {
-      const newUser = await axios.post(
-        `${process.env.API_BASE_URL}/user/signup`,
-        values
-      );
+      await axios.post(`${process.env.API_BASE_URL}/user/signup`, values, {
+        withCredentials: true,
+      });
       nav('/');
     } catch (error) {
       if (error instanceof Error) {
@@ -58,7 +57,11 @@ function Register() {
   }
   return (
     <>
-      {regisetError && <p>{regisetError}</p>}
+      <h1>Register Form</h1>
+      <h2>
+        Already have an account? <Link to="/login">Login</Link>
+      </h2>
+      {registerError && <p>{registerError}</p>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-element">
           <label htmlFor="email">Email: </label>

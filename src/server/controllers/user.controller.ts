@@ -11,9 +11,9 @@ const userController: IUserController = {
       const returnNewUser = {
         email: user.email,
         name: user.name,
-        _id: user._id,
+        userId: user._id,
       };
-      res.locals.newUser = returnNewUser;
+      res.locals.user = returnNewUser;
       return next();
     } catch (error) {
       return next({
