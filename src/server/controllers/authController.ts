@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IAuthController } from '../serverTypes';
-import { generateRandomString, verifyJwt } from '@utils';
+import { generateRandomString } from '@utils';
 import { signJwt } from '@utils';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios from 'axios';
 import config from 'config';
 import { stringify } from 'querystring';
 
@@ -112,47 +112,6 @@ const authController: IAuthController = {
         })
       );
   },
-  refreshToken: async (req, res, next) => {
-    const sRefreshToken: string = req.cookies.sRefreshToken;
-
-    const { decoded, expired } = verifyJwt(
-      sRefreshToken,
-      'refreshTokenPublicKey'
-    );
-
-    try {
-      const response = await axios({
-        method: 'post',
-        url: 'https://accounts.spotify.com/api/token',
-        data: stringify({
-          grant_type: 'refresh_token',
-          refresh_token: decoded?.refresh_token,
-        }),
-        headers: {
-          'content-type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${Buffer.from(
-            `${SPOTIFY_CID}:${SPOTIFY_CS}`
-          ).toString('base64')}`,
-        },
-      });
-
-      console.log(
-        'file: authController.ts:137 => refreshToken: => data:',
-        response
-      );
-
-      res.locals.refresh = response.data as AxiosResponse;
-      return next();
-    } catch (error) {
-      return next({
-        log: `Error caught in authController.refreshToken ${error}`,
-        status: 400,
-        message: 'Authentication Refresh Failed',
-      });
-    }
-  },
-  logout: (req, res, next) => {},
-  verifyAuth: (req, res, next) => {},
 };
 
 export default authController;

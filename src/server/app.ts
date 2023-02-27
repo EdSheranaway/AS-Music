@@ -9,7 +9,6 @@ import deserializeUser from './middleware/deserializeUser';
 import { ErrorHandler, IMiddleware } from '@serverTypes';
 import authRouter from './routes/oAuth';
 import userRouter from './routes/routes';
-import deserializeSpotifUser from './middleware/deserializeSpotifyUser';
 const app = express();
 const port = config.get<number>('port');
 
@@ -22,7 +21,6 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 app.use(deserializeUser);
-app.use(deserializeSpotifUser);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../dist/client')));
 // routers

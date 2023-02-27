@@ -15,10 +15,7 @@ export interface IAuthController {
     res: Response,
     next: NextFunction
   ) => Promise;
-  refreshToken: (req: Request, res: Response, next: NextFunction) => Promise;
   appleAuth: (req: Request, res: Response, next: NextFunction) => void;
-  verifyAuth: (req: Request, res: Response, next: NextFunction) => void;
-  logout: (req: Request, res: Response, next: NextFunction) => void;
 }
 
 export interface IUserController {

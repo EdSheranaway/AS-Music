@@ -20,13 +20,27 @@ interface User {
   exp: number;
 }
 
+interface ISpotifyMe {
+  access_token: string;
+  iat: number;
+  exp: number;
+}
+
 function App() {
   const [user, setUser] = useState<User | null>(null);
+  const [spotifyUser, setSpotifyUser] = useState<string | null>(null);
+
   const { data } = useSwr<User>(`${process.env.API_BASE_URL}/user/me`, fetcher);
+
+  const spotifyData = useSwr<ISpotifyMe>(
+    `${process.env.API_BASE_URL}/oAuth/spotify/me`,
+    fetcher
+  );
 
   useEffect(() => {
     if (data?.name) setUser(data);
-  }, [data]);
+    if (spotifyData.data) setSpotifyUser(spotifyData.data.access_token);
+  }, [data, spotifyData]);
 
   if (user) console.log(user);
   return (
@@ -34,8 +48,10 @@ function App() {
       <BrowserRouter>
         <NavBar user={data?.name} />
         <Routes>
-          <Route path="/" element={<Dashboard user={data?.name} />} />
-          <Route path="/auth/spotify" element={<SpotifyAuth />} />
+          <Route
+            path="/"
+            element={<Dashboard user={data?.name} spotifyUser={spotifyUser} />}
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Routes>

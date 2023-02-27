@@ -20,6 +20,7 @@ interface IResponseData {
 
 const deserializeSpotifUser: IMiddleware = async (req, res, next) => {
   const sAccessToken: string = get(req, 'cookies.sAccessToken');
+
   const sRefreshToken: string = get(req, 'cookies.sRefreshToken');
 
   if (!sAccessToken && !sRefreshToken) {

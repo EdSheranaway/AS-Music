@@ -12,8 +12,8 @@ router.get('/callback', authController.spotifyAuthCallback, (req, res) => {
   res.redirect(res.locals.redirect as string);
 });
 
-router.get('/refresh_token', deserializeSpotifUser, (req, res) => {
-  res.status(200).json(res.locals.user);
+router.get('/spotify/me', deserializeSpotifUser, (_req, res) => {
+  res.status(200).json(res.locals.spotifyUser);
 });
 
 router.post('/apple', (req, res) => {
