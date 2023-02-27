@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { IAuthController } from '../serverTypes';
-import { generateRandomString } from '@utils';
-import axios, { AxiosResponse } from 'axios';
+import { generateRandomString, verifyJwt } from '@utils';
+import { signJwt } from '@utils';
+import axios, { AxiosResponse, AxiosError } from 'axios';
 import config from 'config';
 import { stringify } from 'querystring';
 
@@ -30,6 +31,7 @@ const authController: IAuthController = {
         scope,
       });
       res.locals.redirect = `https://accounts.spotify.com/authorize?${queryParams}`;
+
       return next();
     } catch (error) {
       return next({
@@ -58,15 +60,42 @@ const authController: IAuthController = {
     })
       .then((resp) => {
         if (resp.status === 200) {
-          const access_token = resp.data.access_token as string;
-          const expires_in = resp.data.expires_in as string;
-          const refresh_token = resp.data.refresh_token as string;
-          const queryParams = stringify({
-            access_token,
-            refresh_token,
-            expires_in,
+          const access_token: string = resp.data.access_token;
+
+          const expires_in: number = resp.data.expires_in;
+          const refresh_token: string = resp.data.refresh_token;
+
+          const spotifyAccessToken = signJwt(
+            { access_token },
+            'accessTokenPrivateKey',
+            { expiresIn: expires_in }
+          );
+
+          const spotifyRefreshToken = signJwt(
+            { refresh_token },
+            'refreshTokenPrivateKey',
+            { expiresIn: config.get('refreshTokenTtl') }
+          );
+
+          res.cookie('sAccessToken', spotifyAccessToken, {
+            maxAge: expires_in, //15 mins,
+            httpOnly: true,
+            domain: config.get<string>('domain'),
+            path: '/',
+            sameSite: 'strict',
+            secure: false, // in production put true because https
           });
-          res.locals.redirect = `http://localhost:8080/?${queryParams}`;
+
+          res.cookie('sRefreshToken', spotifyRefreshToken, {
+            maxAge: 2.592e9, //30 days,
+            httpOnly: true,
+            domain: config.get<string>('domain'),
+            path: '/',
+            sameSite: 'strict',
+            secure: false, // in production put true because https
+          });
+
+          res.locals.redirect = 'http://localhost:8080/';
           return next();
         } else {
           res.locals.redirect = `/?${stringify({
@@ -84,14 +113,20 @@ const authController: IAuthController = {
       );
   },
   refreshToken: async (req, res, next) => {
-    const refresh_token = req.query.refresh_token as string;
+    const sRefreshToken: string = req.cookies.sRefreshToken;
+
+    const { decoded, expired } = verifyJwt(
+      sRefreshToken,
+      'refreshTokenPublicKey'
+    );
+
     try {
       const response = await axios({
         method: 'post',
         url: 'https://accounts.spotify.com/api/token',
         data: stringify({
           grant_type: 'refresh_token',
-          refresh_token: refresh_token,
+          refresh_token: decoded?.refresh_token,
         }),
         headers: {
           'content-type': 'application/x-www-form-urlencoded',
@@ -100,6 +135,12 @@ const authController: IAuthController = {
           ).toString('base64')}`,
         },
       });
+
+      console.log(
+        'file: authController.ts:137 => refreshToken: => data:',
+        response
+      );
+
       res.locals.refresh = response.data as AxiosResponse;
       return next();
     } catch (error) {

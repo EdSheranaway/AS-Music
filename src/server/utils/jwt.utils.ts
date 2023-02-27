@@ -28,6 +28,7 @@ export function verifyJwt(
   );
   try {
     const decoded = jwt.verify(token, publicKey) as jwt.JwtPayload;
+
     return {
       valid: true,
       expired: false,

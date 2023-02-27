@@ -1,10 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { CookieOptions } from 'express';
 import { SessionModel } from '@models';
 import config from 'config';
 import { signJwt } from '@utils';
 import { createSession } from '@services';
 import { User, ISessionController } from '@serverTypes';
+
+const accessTokenCookieOptions: CookieOptions = {
+  maxAge: 900000, //15 mins,
+  httpOnly: true,
+  domain: config.get<string>('domain'),
+  path: '/',
+  sameSite: 'strict',
+  secure: false, // in production put true because https
+};
+
+const refreshTokenCookieOptions: CookieOptions = {
+  ...accessTokenCookieOptions,
+  maxAge: 2.592e9, // 30 days,
+};
 
 const sessionController: ISessionController = {
   createSession: async (req, res, next) => {
@@ -27,25 +42,11 @@ const sessionController: ISessionController = {
         { expiresIn: config.get('refreshTokenTtl') }
       );
 
-      res.cookie('accessToken', accessToken, {
-        maxAge: 900000, //15 mins,
-        httpOnly: true,
-        domain: config.get<string>('domain'),
-        path: '/',
-        sameSite: 'strict',
-        secure: false, // in production put true because https
-      });
+      res.cookie('accessToken', accessToken, accessTokenCookieOptions);
 
-      res.cookie('refreshToken', refreshToken, {
-        maxAge: 2.592e9, // 30 days,
-        httpOnly: true,
-        domain: config.get<string>('domain'),
-        path: '/',
-        sameSite: 'strict',
-        secure: false, // in production put true because https
-      });
+      res.cookie('refreshToken', refreshToken, refreshTokenCookieOptions);
 
-      res.locals.user = { ...user, accessToken, refreshToken };
+      res.locals.user = { ...user, accessToken, refreshToken }; //TODO get rid of this later
 
       return next();
     } catch (error) {

@@ -9,20 +9,10 @@ const deserializeUser: IMiddleware = async (req, res, next) => {
     get(req, 'cookies.accessToken') ||
     get(req, 'headers.authorization', '').replace(/^Bearer\s/, '');
 
-  console.log(
-    'file: deserializeUser.ts:10 => constdeserializeUser:IMiddleware= => accessToken:',
-    accessToken
-  );
-
   const refreshToken: string =
     get(req, 'cookies.refreshToken') || get(req, 'headers.x-refresh');
 
-  console.log(
-    'file: deserializeUser.ts:19 => constdeserializeUser:IMiddleware= => refreshToken:',
-    refreshToken
-  );
   if (!accessToken && !refreshToken) {
-    console.log('no access and no refresh');
     return next();
   }
   const { decoded, expired } = verifyJwt(accessToken, 'accessTokenPublicKey');
@@ -36,13 +26,7 @@ const deserializeUser: IMiddleware = async (req, res, next) => {
     (expired && refreshToken && typeof refreshToken === 'string') ||
     (!accessToken && refreshToken)
   ) {
-    console.log('hi');
     const newAccessToken = await reIssueAccessToken({ refreshToken });
-
-    console.log(
-      'file: deserializeUser.ts:42 => constdeserializeUser:IMiddleware= => newAccessToken:',
-      newAccessToken
-    );
 
     if (newAccessToken) {
       res.setHeader('x-access-token', newAccessToken);
