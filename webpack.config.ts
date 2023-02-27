@@ -1,58 +1,111 @@
 import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { EnvironmentPlugin } from 'webpack';
+import { config } from 'dotenv';
+config();
+
+const environmentVariables = ['API_BASE_URL', 'SPOTIFY_BASE_URL'];
+
 module.exports = {
   entry: './src/client/index.tsx',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, '/dist'),
     filename: 'bundle.js',
-  },
-  devtool: 'eval-source-map',
-  module: {
-    rules: [
-      {
-        test: /\.(ts|tsx)$/,
-        loader: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.js$|jsx/,
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-            },
-          },
-        ],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.(jpg|jpeg|png|ttf|svg|gif)$/,
-        type: 'asset/resource',
-        exclude: /node_modules/,
-      },
-    ],
-  },
-  mode: 'development',
-  devServer: {
-    port: 8080,
-    hot: true,
-    historyApiFallback: true,
-    proxy: {
-      '/': 'http://localhost:3000',
-    },
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'src/client/index.html',
+      template: './src/client/index.html',
     }),
+    new EnvironmentPlugin(environmentVariables),
   ],
+  devServer: {
+    host: 'localhost',
+    //frontend
+    port: 8080,
+    historyApiFallback: true,
+    //backend
+    proxy: {
+      '/api/**': 'http://localhost:3000/',
+    },
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        // loader: 'file-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+          },
+        },
+      },
+      {
+        test: /\.(ts|tsx)$/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
+            },
+          },
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.(png|jpg|gif)$/i,
+        exclude: /node_modules/,
+
+        use: ['url-loader', 'file-loader'],
+      },
+      {
+        test: /\.svg$/,
+        loader: 'url-loader',
+      },
+    ],
+  },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.gif', '.png', '.svg'],
+    alias: {
+      '@utils': path.resolve(__dirname, 'src', 'server', 'utils', 'index.ts'),
+      '@routes': path.resolve(__dirname, 'src', 'server', 'routes', 'index'),
+      '@middleware': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'middleware',
+        'index'
+      ),
+      '@controllers': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'controllers',
+        'index'
+      ),
+      '@schemas': path.resolve(__dirname, 'src', 'server', 'schema', 'index'),
+      '@models': path.resolve(__dirname, 'src', 'server', 'models', 'index'),
+      '@services': path.resolve(
+        __dirname,
+        'src',
+        'server',
+        'service',
+        'session.service'
+      ),
+      '@serverTypes': path.resolve(__dirname, 'src', 'server', 'serverTypes'),
+    },
+    // Enable importing JS / TSX files without specifying their extension
+    extensions: ['*', '.ts', '.tsx', '.js', '.jsx', '.json'],
+    fallback: {
+      fs: false,
+    },
   },
 };
