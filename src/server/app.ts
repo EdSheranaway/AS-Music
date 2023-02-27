@@ -5,10 +5,9 @@ import config from 'config';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { connect, logger } from '@utils';
-import deserializeUser from './middleware/deserializeUser';
+import { deserializeUser } from '@middleware';
 import { ErrorHandler, IMiddleware } from '@serverTypes';
-import authRouter from './routes/oAuth';
-import userRouter from './routes/routes';
+import { oAuthRouter, spotifyRouter, userRouter } from '@routes';
 const app = express();
 const port = config.get<number>('port');
 
@@ -24,8 +23,9 @@ app.use(deserializeUser);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../dist/client')));
 // routers
-app.use('/api/oAuth', authRouter);
+app.use('/api/oAuth', oAuthRouter);
 app.use('/api/user', userRouter);
+app.use('/api/spotify', spotifyRouter);
 
 app.get<IMiddleware>('*', (_req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../client/index.html'));

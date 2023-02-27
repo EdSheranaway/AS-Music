@@ -1,4 +1,3 @@
-// const spotifyJWT = verifyJwt(spotifyAccessToken, 'accessTokenPublicKey');
 import { signJwt, verifyJwt } from '@utils';
 import axios from 'axios';
 import { get } from 'lodash';
@@ -18,7 +17,7 @@ interface IResponseData {
   };
 }
 
-const deserializeSpotifUser: IMiddleware = async (req, res, next) => {
+const deserializeSpotifyUser: IMiddleware = async (req, res, next) => {
   const sAccessToken: string = get(req, 'cookies.sAccessToken');
 
   const sRefreshToken: string = get(req, 'cookies.sRefreshToken');
@@ -75,10 +74,10 @@ const deserializeSpotifUser: IMiddleware = async (req, res, next) => {
 
       const result = verifyJwt(newAccessToken, 'accessTokenPublicKey');
 
-      res.locals.user = result;
+      res.locals.spotifyUser = result;
     }
   }
   return next();
 };
 
-export default deserializeSpotifUser;
+export default deserializeSpotifyUser;

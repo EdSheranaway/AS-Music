@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { verifyJwt } from '@utils';
 import { reIssueAccessToken } from '@services';
 import { get } from 'lodash';
@@ -18,7 +19,11 @@ const deserializeUser: IMiddleware = async (req, res, next) => {
   const { decoded, expired } = verifyJwt(accessToken, 'accessTokenPublicKey');
 
   if (decoded) {
-    res.locals.user = decoded;
+    if (decoded._doc && decoded._doc.name) {
+      res.locals.user = decoded._doc.name;
+    } else {
+      res.locals.user = decoded.name;
+    }
     return next();
   }
 
