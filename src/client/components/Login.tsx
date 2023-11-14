@@ -7,10 +7,10 @@ import { object, string, TypeOf } from 'zod';
 
 const createSessionSchema = object({
   email: string().min(1, {
-    message: 'Email is required',
+    message: 'Email is necessary',
   }),
   password: string()
-    .min(8, 'Password too short - must be 8 chars minimum')
+    .min(6, 'Password too short - must be 6 chars minimum')
     .min(1, {
       message: 'Password is required',
     }),
@@ -37,7 +37,8 @@ function Login() {
         values,
         { withCredentials: true }
       );
-      nav('/');
+      if (newUser) {nav('/');}
+      
     } catch (error) {
       if (error instanceof Error) {
         setRegisterError(error.message);
